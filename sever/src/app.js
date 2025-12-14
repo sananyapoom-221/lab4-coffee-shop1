@@ -1,46 +1,16 @@
-let express = require('express')
-let bodyParser = require('body-parser') // เพิ่มบรรทัดนี้
-const app = express()
+const express = require('express');
+const app = express();
 
-// เพิ่ม 2 บรรทัดนี้เพื่อใช้งาน body-parser
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+// Middleware (ถ้ามี)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/status', function (req, res) {
-    res.send('Hello nodejs server')
-})
+// --- จุดเปลี่ยนสำคัญ ---
+// เรียกใช้ routes.js ที่เราเพิ่งสร้าง
+require('./routes')(app); 
+// --------------------
 
-app.get('/hello/:person', function (req, res) {
-    console.log('hello - ' + req.params.person)
-    res.send('say hello with ' + req.params.person)
-})
-
-// get user by id
-app.get('/user/:userId', function (req, res) {
-    res.send('ดูข้อมูลผู้ใช้งาน: ' + req.params.userId)
-})
-
-// get all user
-app.get('/users', function (req, res) {
-    res.send('เรียกข้อมูล ผู้ใช้งานทั้งหมด')
-})
-
-let port = 8081
-app.listen(port, function () {
-    console.log('server running on ' + port)
-})
-
-// create user
-app.post('/user/', function (req, res) {
-    res.send('ทำการสร้างผู้ใช้งาน: ' + JSON.stringify(req.body))
-})
-
-// edit user
-app.put('/user/:userId', function (req, res) {
-    res.send('ทำการแก้ไขผู้ใช้งาน: ' + req.params.userId + ' : ' + JSON.stringify(req.body))
-})
-
-// delete user
-app.delete('/user/:userId', function (req, res) {
-    res.send('ทำการลบผู้ใช้งาน: ' + req.params.userId + ' : ' + JSON.stringify(req.body))
-})
+const PORT = 8081;
+app.listen(PORT, () => {
+    console.log('Server running on port ' + PORT);
+});
