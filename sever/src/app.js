@@ -1,16 +1,18 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const bodyParser = require('body-parser')
+const config = require('./config/config')
+const db = require('./models')
+const routes = require('./routes')
 
-// Middleware (ถ้ามี)
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = express()
 
-// --- จุดเปลี่ยนสำคัญ ---
-// เรียกใช้ routes.js ที่เราเพิ่งสร้าง
-require('./routes')(app); 
-// --------------------
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-const PORT = 8081;
-app.listen(PORT, () => {
-    console.log('Server running on port ' + PORT);
-});
+routes(app)
+
+db.sequelize.sync({ force: false }).then(() => {
+  app.listen(config.port, () => {
+    console.log('CoffeeShop Server running on port ' + config.port)
+  })
+})
